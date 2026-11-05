@@ -1,0 +1,6 @@
+build-essential
+cmake
+pkg-config
+python3-pip
+python3-venv
+strace

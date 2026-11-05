@@ -1,0 +1,23 @@
+# Forge Linux: keep kernel packages consistent across live-build passes.
+#
+# live-build's binary pass (chroot_archives binary install) runs apt
+# update+upgrade+dist-upgrade AFTER the squashfs has been built from the
+# chroot, but BEFORE binary_linux-image copies /boot/vmlinuz-* to the ISO.
+# If a newer kernel exists in trixie-updates or trixie-security at that
+# moment, the ISO ends up booting a kernel whose modules tree is not in
+# the squashfs -> evdev missing -> /dev/input/event* absent -> keyboard
+# and mouse dead in every session (seen in VirtualBox: 'forge' live image
+# with kernel 6.12.115 + modules 6.12.107).
+#
+# Fix: allow kernel packages only from the main trixie archive in BOTH
+# passes, so the binary-pass dist-upgrade can never inject a newer kernel
+# after the squashfs freeze. Other packages (firefox, curl, flatpak, ...)
+# keep drifting freely; kernel updates arrive with rebuilds from main.
+
+Package: linux-image-* linux-headers-* linux-kbuild-* linux-compiler-*
+Pin: release o=Debian,a=trixie-security
+Pin-Priority: -1
+
+Package: linux-image-* linux-headers-* linux-kbuild-* linux-compiler-*
+Pin: release o=Debian,a=trixie-updates
+Pin-Priority: -1

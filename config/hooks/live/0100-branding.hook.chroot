@@ -1,0 +1,22 @@
+#!/bin/sh
+# Hook: Forge Linux branding files inside the image.
+set -e
+
+echo "hook: writing Forge Linux branding"
+
+printf 'FORGE_OS=Forge Linux\nFORGE_VERSION=1.0.0\nFORGE_CODENAME=anvil\nBASE_DEBIAN=13 (trixie)\n' > /etc/forge-release
+chmod 644 /etc/forge-release
+
+install -d /usr/share/forge /var/lib/forge
+cat > /usr/share/forge/banner.txt <<'EOF'
+Forge Linux 1.0 ("anvil") -- Debian 13 base
+tuned for gaming + AI training; try 'gforge status' or 'gforge doctor'
+EOF
+chmod 644 /usr/share/forge/banner.txt
+
+cat > /etc/profile.d/70-forge-banner.sh <<'EOF'
+if [ "$PS1" ] && [ -r /usr/share/forge/banner.txt ]; then
+    cat /usr/share/forge/banner.txt
+fi
+EOF
+chmod 644 /etc/profile.d/70-forge-banner.sh

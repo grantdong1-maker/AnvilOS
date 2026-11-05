@@ -1,0 +1,69 @@
+#!/bin/bash
+# Forge Linux: kernel/modules consistency guard (chroot hook).
+#
+# Runs late in the chroot stage. Guarantees EVERY vmlinuz kept in /boot
+# has a matching modules tree (and vice versa), leaving exactly one
+# kernel pair. Second line of defense after the kernel-suite apt pin:
+# protects against kernel/modules drift from any source (mirror races,
+# interrupted installs, future live-build changes).
+set -e
+
+# Group releases seen in /boot and /lib/modules
+vrel="$(ls -1 /boot/vmlinuz-* 2>/dev/null | sed 's|.*/vmlinuz-||' | sort -Vu || true)"
+mrel="$(ls -1 /lib/modules 2>/dev/null | sort -Vu || true)"
+allrel="$(printf '%s\n' $vrel $mrel | sort -Vu | grep -v '^$' || true)"
+[ -n "$allrel" ] || { echo "FATAL: no kernels nor modules present" >&2; exit 1; }
+
+# Score: a release kept only if it has BOTH vmlinuz and a valid modules tree
+best=""
+for rel in $allrel; do
+	v_ok=$([ -f "/boot/vmlinuz-$rel" ] && echo yes || echo no)
+	m_ok=$([ -f "/lib/modules/$rel/modules.dep" ] && echo yes || echo no)
+	if [ "$v_ok" = yes ] && [ "$m_ok" = yes ]; then
+		best="$rel"
+	fi
+done
+if [ -z "$best" ]; then
+	# No complete pair: keep the newest modules tree and drop boot kernels
+	best="$(printf '%s\n' $mrel | sort -V | tail -1)"
+	echo "WARNING: no complete kernel/modules pair; keeping modules of $best" >&2
+	v_ok=no
+else
+	v_ok=yes
+fi
+KREL="$best"
+echo "forgelinux-kernel-consistency: keeping release ${KREL}"
+
+for rel in $allrel; do
+	[ "$rel" = "$KREL" ] && continue
+	echo "forgelinux-kernel-consistency: dropping kernel release $rel" >&2
+	# dpkg removal first (postrm hooks kept happy)
+	pkgs="$(dpkg-query -W -f='${Package}\n' 2>/dev/null | grep -F -- "$rel" | grep -E '^linux-(image|headers|kbuild|compiler)' || true)"
+	for p in $pkgs; do
+		echo "  removing package $p" >&2
+		apt-get -y remove "$p" >/dev/null 2>&1 || dpkg -r "$p" >/dev/null 2>&1 || true
+	done
+	rm -f "/boot/vmlinuz-$rel" "/boot/initrd.img-$rel" "/boot/config-$rel" "/boot/System.map-$rel" 2>/dev/null || true
+	rm -rf "/lib/modules/$rel" 2>/dev/null || true
+done
+
+# Unify the boot symlinks on the kept kernel
+rm -f /vmlinuz /initrd.img
+[ "$v_ok" = yes ] && ln -s "boot/vmlinuz-$KREL" /vmlinuz
+[ -f "/boot/initrd.img-$KREL" ] && ln -s "boot/initrd.img-$KREL" /initrd.img
+
+# Final assertions
+if [ "$v_ok" = yes ] && [ ! -f "/boot/vmlinuz-$KREL" ]; then
+	echo "FATAL: vmlinuz-$KREL vanished during cleanup" >&2
+	exit 1
+fi
+[ -f "/lib/modules/$KREL/modules.dep" ] || { echo "FATAL: modules tree for $KREL invalid" >&2; exit 1; }
+
+# Regenerate initramfs for the kept kernel (matches /live/initrd.img copy)
+if command -v update-initramfs >/dev/null 2>&1; then
+	# -u regenerates only existing entries; safe and fast
+	update-initramfs -u -k "$KREL" >/dev/null 2>&1 || true
+fi
+
+echo "forgelinux-kernel-consistency: OK - single kernel $KREL with matching modules"
+exit 0

@@ -1,0 +1,26 @@
+# live-build working trees & artifacts (GB-scale, reproducible from source)
+/chroot/
+/binary/
+/cache/
+/.build/
+/local/
+/.disabled/
+
+# Built images & logs
+*.iso
+*.iso.*
+/build.log
+/*.log
+
+# Debian-installer build bits
+/config/debian-installer/*.tar.gz
+
+# Environments
+*.deb
+.DS_Store
+
+# live-build manifests (regenerable artifacts)
+/chroot.files
+/chroot.packages*
+/live-image-amd64.*
+/binary.modified_timestamps

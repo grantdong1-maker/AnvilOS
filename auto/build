@@ -1,0 +1,5 @@
+#!/bin/sh
+# Invoked automatically by `lb build` / `lb clean` (Debian live-build examples).
+# Declares that building happens through lb's own stages; kept trivial on purpose.
+set -e
+lb build noauto "${@}"

@@ -1,0 +1,4 @@
+#!/bin/sh
+# Invoked automatically by `lb clean` (Debian live-build examples).
+set -e
+lb clean noauto "${@}"

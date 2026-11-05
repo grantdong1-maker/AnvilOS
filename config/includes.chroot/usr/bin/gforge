@@ -1,0 +1,264 @@
+#!/usr/bin/env bash
+# gforge - Forge Linux performance control utility.
+#
+# Subcommands: status, gaming, training, balanced, gpu, doctor, clean, help
+set -u
+
+VERSION="1.0.0"
+STATE_DIR="/var/lib/forge"
+GOV_STATE="$STATE_DIR/state-governor"
+
+# ---------------------------------------------------------------- helpers ---
+
+have() { command -v "$1" >/dev/null 2>&1; }
+
+as_root() {
+    if [ "$(id -u)" -eq 0 ]; then "$@"; else sudo "$@"; fi
+}
+
+say() { printf '  %s\n' "$*"; }
+
+# very small colour helper (plain when not a tty)
+if [ -t 1 ]; then
+    C_OK=$'\e[32m'; C_BAD=$'\e[31m'; C_DIM=$'\e[2m'; C_END=$'\e[0m'
+else
+    C_OK="" C_BAD="" C_DIM="" C_END=""
+fi
+ok()   { printf '  %s[ok]%s   %s\n' "$C_OK" "$C_END" "$*"; }
+fail() { printf '  %s[!!]%s   %s\n' "$C_BAD" "$C_END" "$*"; }
+note() { printf '  %s--%s     %s\n' "$C_DIM" "$C_END" "$*"; }
+
+# ------------------------------------------------------------- cpu governor ---
+
+cpu_governors() {
+    for g in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do
+        [ -w "$g" ] && echo "$g"
+    done
+}
+
+set_governor_performance() {
+    local g list state="/var/lib/forge/state-governor"
+    list="$(cpu_governors)"
+    if [ -z "$list" ]; then
+        say "cpufreq governor not tunable here (VM or pstate driver) - skipped"
+        return 0
+    fi
+    if [ ! -s "$state" ]; then
+        as_root mkdir -p "$STATE_DIR"
+        as_root sh -c 'for g in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do [ -r "$g" ] && cat "$g" >> /var/lib/forge/state-governor; done'
+    fi
+    local total=0
+    for g in $list; do
+        if as_root sh -c "echo performance > '$g'" 2>/dev/null; then
+            total=$((total + 1))
+        fi
+    done
+    say "CPU governor -> performance on $total core(s)"
+}
+
+restore_governor() {
+    local g n=0 line
+    if [ ! -s "$GOV_STATE" ]; then
+        say "no saved governor state to restore"
+        return 0
+    fi
+    for g in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do
+        [ -w "$g" ] || continue
+        n=$((n + 1))
+        line=$(sed -n "${n}p" "$GOV_STATE" 2>/dev/null || true)
+        [ -n "$line" ] && as_root sh -c "echo '$line' > '$g'" 2>/dev/null || true
+    done
+    as_root rm -f "$GOV_STATE"
+    say "CPU governors restored"
+}
+
+# ---------------------------------------------------------------- profiles ---
+
+nvidia_persist() {
+    if have nvidia-smi; then
+        if as_root nvidia-smi -pm 1 >/dev/null 2>&1; then
+            say "NVIDIA: persistence mode on"
+        else
+            say "NVIDIA: could not set persistence (check driver)"
+        fi
+    fi
+}
+
+nvidia_off() {
+    have nvidia-smi && as_root nvidia-smi -pm 0 >/dev/null 2>&1 || true
+}
+
+apply_sysctls() {
+    as_root sysctl -w -q \
+        "vm.swappiness=$1" \
+        "vm.vfs_cache_pressure=$2" \
+        "vm.max_map_count=2147483647" \
+        "fs.inotify.max_user_watches=16777216"
+}
+
+profile_gaming() {
+    echo "== Forge gaming profile =="
+    set_governor_performance
+    apply_sysctls 10 50
+    nvidia_persist
+    cat <<'EOT'
+
+One-shot boost wrappers for a game or launcher binary:
+
+    gamemoderun ./game-binary           (CPU/IO boost while the process runs)
+    mangohud gamemoderun ./game-binary  (+ MangoHud overlay)
+    MANGOHUD_CONFIG=...                 (see https://github.com/flightlessmango/MangoHud)
+EOT
+}
+
+profile_training() {
+    echo "== Forge AI training profile =="
+    set_governor_performance
+    apply_sysctls 1 40
+    nvidia_persist
+    if have nvidia-smi && ! python3 -c 'import torch; torch.cuda.is_available()' >/dev/null 2>&1; then
+        cat <<'EOT'
+
+GPU PyTorch not detected. Debian's python3-torch is CPU-built; CUDA 12
+wheels bundle their own runtime - only the driver is needed:
+
+    python3 -m venv ~/gpu-env
+    ~/gpu-env/bin/pip install torch torchvision torchaudio
+
+(this env already outruns any system torch on NVIDIA GPUs)
+EOT
+    else
+        cat <<'EOT'
+
+Dataloader advice:
+    pin_memory=True, num_workers>=4 in torch DataLoader
+    nccl: export NCCL_DEBUG=INFO NCCL_SOCKET_IFNAME=...
+EOT
+    fi
+}
+
+profile_balanced() {
+    echo "== Forge balanced profile =="
+    restore_governor
+    apply_sysctls 60 100
+    nvidia_off
+    say "NVIDIA persistence off; sysctls back to desktop defaults"
+}
+
+# ---------------------------------------------------------------- status ---
+
+cmd_status() {
+    echo "Forge Linux (see /etc/forge-release)"
+    if [ -r /etc/forge-release ]; then
+        sed 's/^/  /' /etc/forge-release
+    fi
+    say "kernel:  $(uname -r)"
+    say "uptime:  $(uptime -p 2>/dev/null || uptime)"
+    local g
+    g=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor 2>/dev/null || echo "n/a")
+    say "governor: $g"
+    say "swappiness: $(cat /proc/sys/vm/swappiness)  max_map_count: $(cat /proc/sys/vm/max_map_count)"
+    say "nofile limit (cur/hard): $(ulimit -Sn) / $(ulimit -Hn)"
+    say "memlock: $(ulimit -l)"
+    if have nvidia-smi; then
+        nvidia-smi --query-gpu=name,driver_version,memory.used,temperature.gpu --format=csv,noheader | sed 's/^/  nvidia: /'
+    elif have lspci; then
+        lspci 2>/dev/null | grep -i -E 'vga|3d' | sed 's/^/  gpu: /'
+    fi
+    if have gamemoded; then
+        say "gamemoded: available"
+    fi
+}
+
+cmd_gpu() {
+    echo "GPU stack:"
+    if have nvidia-smi; then
+        say "-- NVIDIA --"
+        nvidia-smi --query-gpu=name,driver_version,memory.total,compute_cap --format=csv,noheader |
+            sed 's/^/  /'
+        nvidia-smi -q | awk '/Persistence Mode|Compute Mode:/{print "  "$0}' | head -4
+    else
+        note "no nvidia-smi"
+    fi
+    if have glxinfo; then
+        glxinfo 2>/dev/null | grep -m1 'OpenGL renderer' | sed 's/^/  gl: /'
+    fi
+    if have vulkaninfo; then
+        vulkaninfo --summary 2>/dev/null | grep -m1 'deviceName' | sed 's/^/  vulkan: /'
+    fi
+}
+
+cmd_doctor() {
+    echo "Forge doctor:"
+    if [ -r /etc/forge-release ]; then ok "forge-release present"; else fail "no /etc/forge-release (not a Forge install?)"; fi
+    have vulkaninfo && vulkaninfo --summary >/dev/null 2>&1 && ok "vulkan (vulkaninfo)" || fail "vulkan unusable (install vulkan-tools, check driver)"
+    have glxinfo && glxinfo >/dev/null 2>&1 && ok "opengl (glxinfo)" || fail "opengl unusable"
+    if have nvidia-smi && nvidia-smi >/dev/null 2>&1; then
+        ok "nvidia driver"
+    elif have nvidia-smi; then
+        fail "nvidia-smi present but driver not working (try nvidia-detect)"
+    else
+        note "nvidia not installed (ok for amd/intel)"
+    fi
+    have gamemoded && ok "gamemode" || fail "gamemode missing"
+    if have flatpak && flatpak remotes 2>/dev/null | grep -q flathub; then
+        ok "flatpak + flathub"
+    else
+        fail "flathub remote not configured"
+    fi
+    if python3 -c 'import torch' >/dev/null 2>&1; then
+        ok "torch $(python3 -c 'import torch;print(torch.__version__)')"
+    else
+        note "torch not importable"
+    fi
+    if python3 -c 'import torch; assert torch.cuda.is_available()' >/dev/null 2>&1; then
+        ok "torch CUDA available"
+    else
+        note "torch CUDA: no (see 'gforge training' for the wheel env)"
+    fi
+    if curl -sI --max-time 5 https://deb.debian.org/ >/dev/null 2>&1; then
+        ok "network reachability"
+    else
+        fail "deb.debian.org unreachable"
+    fi
+    note "run 'apt-get update && apt-get upgrade -y' to stay current"
+}
+
+cmd_clean() {
+    echo "Freeing package caches..."
+    if as_root apt-get -y autoremove >/dev/null 2>&1; then :; fi
+    as_root apt-get clean
+    have pip3 && python3 -m pip cache purge >/dev/null 2>&1 && say "pip cache purged"
+    have flatpak && flatpak uninstall --unused -y >/dev/null 2>&1
+    say "system apt cache cleaned"
+}
+
+version() { printf 'gforge %s\n' "$VERSION"; }
+
+usage() {
+    cat <<EOT
+gforge ${VERSION} - Forge Linux control utility
+
+  gforge status     show OS, scheduler, limits, GPU snapshot
+  gforge gaming     performance profile (governors, swappiness, NVIDIA persistence)
+  gforge training   training profile (+ CUDA wheel venv advice)
+  gforge balanced   restore saved governors and desktop sysctls
+  gforge gpu        NVIDIA / GL / Vulkan summary
+  gforge doctor     environment checks
+  gforge clean      remove apt/pip/flatpak caches
+EOT
+}
+
+case "${1:-}" in
+    status) cmd_status ;;
+    gaming) profile_gaming ;;
+    training) profile_training ;;
+    balanced) profile_balanced ;;
+    gpu) cmd_gpu ;;
+    doctor) cmd_doctor ;;
+    clean) cmd_clean ;;
+    version|--version|-V) version ;;
+    help|--help|-h) usage ;;
+    "") usage; exit 0 ;;
+    *) echo "gforge: unknown command '$1'" >&2; usage >&2; exit 2 ;;
+esac

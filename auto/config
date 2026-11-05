@@ -1,0 +1,21 @@
+#!/bin/sh
+# Forge Linux live-build configuration.
+# Anything appended via "$@" (e.g. --parent-mirror-binary=http://...) takes
+# precedence over these defaults.
+set -e
+
+lb config noauto \
+	--architecture amd64 \
+	--distribution trixie \
+	--archive-areas "main contrib non-free non-free-firmware" \
+	--linux-flavours amd64 \
+	--debian-installer live \
+	--firmware-binary true \
+	--firmware-chroot true \
+	--apt-recommends true \
+	--iso-application "Forge Linux 1.0 anvil" \
+	--iso-publisher "Forge Linux; https://forge-linux.invalid/; forge@forge-linux.invalid" \
+	--iso-volume "forge-1.0.0-amd64" \
+	--bootappend-live "boot=live components username=forge hostname=forge locales=en_US.UTF-8 keyboard-layouts=us" \
+	--memtest memtest86+ \
+	"${@}"

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=GrantOS Anvil
+Name[en_AU]=GrantOS Anvil
+X-KDE-PluginInfo-Author=GrantOS Project
+X-KDE-PluginInfo-Email=grant@grantos.invalid
+X-KDE-PluginInfo-Name=grantos-anvil
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-License=MIT
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-ServiceTypes=Plasma/Wallpaper
+Type=Service
+Icon=contents/images/1920x1080.png

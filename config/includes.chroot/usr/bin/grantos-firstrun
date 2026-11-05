@@ -1,0 +1,15 @@
+#!/bin/sh
+# GrantOS first-login theming: apply brand wallpaper, dark scheme, ember accent.
+# Runs once per user account, from XDG autostart after Plasma comes up.
+
+[ -f "$HOME/.config/grantos-initialized" ] && exit 0
+
+# Give Plasma a moment to finish starting the shell.
+sleep 8
+
+plasma-apply-colorscheme GrantOSDark >/dev/null 2>&1 || true
+plasma-apply-desktoptheme breeze-dark >/dev/null 2>&1 || true
+plasma-apply-wallpaperimage /usr/share/wallpapers/grantos/contents/images/1920x1080.png >/dev/null 2>&1 || true
+
+mkdir -p "$HOME/.config"
+touch "$HOME/.config/grantos-initialized"

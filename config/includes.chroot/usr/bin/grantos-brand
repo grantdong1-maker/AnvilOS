@@ -1,0 +1,13 @@
+#!/bin/sh
+# Make the live user's display name read "GrantOS User" instead of the
+# Debian default, so SDDM / lock screen show the right identity.
+set -e
+
+USER_NAME="${LIVE_USERNAME:-forge}"
+if [ "$(id -u)" != "0" ]; then
+    exit 0
+fi
+
+if id "$USER_NAME" >/dev/null 2>&1; then
+    usermod -c "GrantOS User" "$USER_NAME"
+fi

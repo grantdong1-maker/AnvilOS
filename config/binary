@@ -10,7 +10,7 @@ LB_BINARY_FILESYSTEM="fat32"
 LB_APT_INDICES="true"
 
 # Set boot parameters
-LB_BOOTAPPEND_LIVE="boot=live components username=forge hostname=forge locales=en_US.UTF-8 keyboard-layouts=us"
+LB_BOOTAPPEND_LIVE="boot=live components username=forge hostname=grantos quiet splash locales=en_US.UTF-8 keyboard-layouts=us"
 
 # Set boot parameters
 LB_BOOTAPPEND_INSTALL=""
@@ -71,16 +71,16 @@ LB_HDD_SIZE="auto"
 LB_HDD_PARTITION_START=""
 
 # Set iso author
-LB_ISO_APPLICATION="Forge Linux 1.0 anvil"
+LB_ISO_APPLICATION="GrantOS 1.0 (anvil)"
 
 # Set iso preparer
 LB_ISO_PREPARER="live-build @LB_VERSION@; https://salsa.debian.org/live-team/live-build"
 
 # Set iso publisher
-LB_ISO_PUBLISHER="Forge Linux; https://forge-linux.invalid/; forge@forge-linux.invalid"
+LB_ISO_PUBLISHER="GrantOS Project; https://grantos.invalid/; grant@grantos.invalid"
 
 # Set iso volume (max 32 chars)
-LB_ISO_VOLUME="forge-1.0.0-amd64"
+LB_ISO_VOLUME="grantos-1.0.0-amd64"
 
 # Set jffs2 eraseblock size
 LB_JFFS2_ERASEBLOCK=""

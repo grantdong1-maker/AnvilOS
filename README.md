@@ -1,4 +1,4 @@
-# GrantOS (Forge Linux 1.0 "anvil")
+# GrantOS 1.0 "anvil"
 
 An OS built with the help of AI, optimised for AI and gaming. Built upon **Debian 13 (trixie)** using **live-build**.
 

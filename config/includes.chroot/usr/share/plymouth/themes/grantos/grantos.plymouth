@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=GrantOS
+Description=GrantOS 1.0 (anvil) boot splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/grantos
+ScriptFile=/usr/share/plymouth/themes/grantos/grantos.script

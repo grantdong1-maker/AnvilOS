@@ -1,0 +1,5 @@
+[General]
+DefaultProfile=GrantOS.profile
+
+[KonsoleWindow]
+ShowMenuBarByDefault=false

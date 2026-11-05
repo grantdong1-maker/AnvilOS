@@ -1,0 +1,13 @@
+[Unit]
+Description=GrantOS branding fixes (live user display name)
+After=live-config.service
+# No-op on installed (non-live) systems: live user only exists there.
+ConditionPathExists=/run/live
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/grantos-brand
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

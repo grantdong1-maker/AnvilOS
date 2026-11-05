@@ -13,9 +13,9 @@ lb config noauto \
 	--firmware-binary true \
 	--firmware-chroot true \
 	--apt-recommends true \
-	--iso-application "Forge Linux 1.0 anvil" \
-	--iso-publisher "Forge Linux; https://forge-linux.invalid/; forge@forge-linux.invalid" \
-	--iso-volume "forge-1.0.0-amd64" \
-	--bootappend-live "boot=live components username=forge hostname=forge locales=en_US.UTF-8 keyboard-layouts=us" \
+	--iso-application "GrantOS 1.0 (anvil)" \
+	--iso-publisher "GrantOS Project; https://grantos.invalid/; grant@grantos.invalid" \
+	--iso-volume "grantos-1.0.0-amd64" \
+	--bootappend-live "boot=live components username=forge hostname=grantos quiet splash locales=en_US.UTF-8 keyboard-layouts=us" \
 	--memtest memtest86+ \
 	"${@}"

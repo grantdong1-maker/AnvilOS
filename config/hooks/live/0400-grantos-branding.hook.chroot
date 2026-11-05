@@ -1,0 +1,72 @@
+#!/bin/sh
+# Hook: GrantOS visual branding inside the chroot.
+# Runs at hook stage 0400, i.e. BEFORE 0900-kernel-consistency, so the final
+# initramfs regen there also pulls in our Plymouth theme.
+set -e
+
+echo "hook: GrantOS branding (os-release, SDDM, Plymouth, services)"
+
+# ---------------------------------------------------------------- os-release
+# Live-build copies our os-release files BEFORE package installation, so
+# base-files can overwrite them in the chroot. Re-assert them here.
+cat > /etc/os-release <<'EOF'
+PRETTY_NAME="GrantOS 1.0 (anvil)"
+NAME="GrantOS"
+VERSION="1.0 (anvil)"
+VERSION_ID="1.0"
+VERSION_CODENAME=anvil
+ID=grantos
+ID_LIKE=debian
+HOME_URL="https://grantos.invalid/"
+SUPPORT_URL="https://grantos.invalid/"
+BUG_REPORT_URL="https://github.com/grantdong1-maker/GrantOS/issues"
+EOF
+chmod 644 /etc/os-release
+
+if [ -e /usr/lib/os-release ]; then
+    cat > /usr/lib/os-release <<'EOF'
+PRETTY_NAME="GrantOS 1.0 (anvil)"
+NAME="GrantOS"
+VERSION="1.0 (anvil)"
+VERSION_ID="1.0"
+VERSION_CODENAME=anvil
+ID=grantos
+ID_LIKE=debian
+HOME_URL="https://grantos.invalid/"
+SUPPORT_URL="https://grantos.invalid/"
+BUG_REPORT_URL="https://github.com/grantdong1-maker/GrantOS/issues"
+EOF
+    chmod 644 /usr/lib/os-release
+fi
+
+# ------------------------------------------------- live-user display name
+# Live-config creates the user with GECOS "Debian Live user"; the shipped
+# grantos-branding.service fixes it on boot (after live-config ran).
+install -d /etc/systemd/system/multi-user.target.wants
+ln -sf /etc/systemd/system/grantos-branding.service \
+    /etc/systemd/system/multi-user.target.wants/grantos-branding.service
+
+# --------------------------------------------------------------------- SDDM
+install -d /etc/sddm.conf.d
+cat > /etc/sddm.conf.d/zz-grantos-branding.conf <<'EOF'
+[Theme]
+Current=breeze
+EOF
+# Breeze greeter: our wallpaper behind the login box, ember accent text.
+# NOTE: key spellings in this file are lowercase; QSettings matches
+# case-insensitively, but sed is case-sensitive.
+if [ -f /usr/share/sddm/themes/breeze/theme.conf ]; then
+    sed -i '/^[Bb]ackground=/s|=.*|=/usr/share/wallpapers/grantos/contents/images/1920x1080.png|' \
+        /usr/share/sddm/themes/breeze/theme.conf
+    sed -i '/^[Cc]olor=/s|=.*|=#d67a3c|' \
+        /usr/share/sddm/themes/breeze/theme.conf
+fi
+
+# ------------------------------------------------------------------ Plymouth
+if [ -f /usr/share/plymouth/themes/grantos/grantos.plymouth ]; then
+    plymouth-set-default-theme grantos || true
+else
+    plymouth-set-default-theme text || true
+fi
+
+echo "hook: GrantOS branding done"

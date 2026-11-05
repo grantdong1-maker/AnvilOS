@@ -52,14 +52,24 @@ cat > /etc/sddm.conf.d/zz-grantos-branding.conf <<'EOF'
 [Theme]
 Current=breeze
 EOF
-# Breeze greeter: our wallpaper behind the login box, ember accent text.
+# Breeze greeter: forge-glow wallpaper behind the login box, ember accent text.
 # NOTE: key spellings in this file are lowercase; QSettings matches
 # case-insensitively, but sed is case-sensitive.
 if [ -f /usr/share/sddm/themes/breeze/theme.conf ]; then
-    sed -i '/^[Bb]ackground=/s|=.*|=/usr/share/wallpapers/grantos/contents/images/1920x1080.png|' \
+    sed -i '/^[Bb]ackground=/s|=.*|=/usr/share/wallpapers/grantos-lock/contents/images/1920x1080.png|' \
         /usr/share/sddm/themes/breeze/theme.conf
     sed -i '/^[Cc]olor=/s|=.*|=#d67a3c|' \
         /usr/share/sddm/themes/breeze/theme.conf
+fi
+
+# ------------------------------------------------------- avatars (anvil face)
+# Replaces Debian's swirl: this one file is the fallback avatar for both the
+# SDDM greeter and the Plasma lock screen on Debian.
+if [ -r /usr/share/grantos-art/avatar.png ]; then
+    install -m 644 /usr/share/grantos-art/avatar.png /usr/share/sddm/faces/.face.icon
+    install -m 644 /usr/share/grantos-art/avatar.png /usr/share/sddm/faces/forge.face.icon
+    install -m 644 /usr/share/grantos-art/avatar.png /usr/share/sddm/faces/root.face.icon
+    install -m 644 /usr/share/grantos-art/avatar.png /usr/share/sddm/themes/breeze/faces/.face.icon 2>/dev/null || true
 fi
 
 # ------------------------------------------------------------------ Plymouth

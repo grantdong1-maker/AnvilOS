@@ -23,7 +23,7 @@ terminal-font: "Unifont Regular 16"
         width = 80%
         top = 52%
         height = 48%-80
-        item_color = "#a8a8a8"
+        item_color = "#ffffff"
 	item_font = "Unifont Regular 16"
         selected_item_color= "#ffffff"
 	selected_item_font = "Unifont Regular 16"

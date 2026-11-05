@@ -1,0 +1,45 @@
+#!/bin/sh
+# Hook: trim KDE bloat and strip KDE signage from the app menu.
+# Applies to every variant. Only Recommends-level packages are removed, so
+# nothing hard-depends on them (verified against the trixie package index).
+set -e
+
+echo "hook: trimming KDE bloat + debranding app names"
+
+# konqueror/kfind/kwrite/kde-baseapps are one dependency cluster; plasma-disks
+# pulls partitionmanager; kwalletmanager + kdeconnect are optional extras.
+apt-get purge -y \
+    kde-baseapps konqueror konq-plugins kfind kwrite \
+    partitionmanager plasma-disks \
+    kwalletmanager kdeconnect \
+    >/dev/null 2>&1 || true
+apt-get autoremove -y --purge >/dev/null 2>&1 || true
+
+# Konsole is just "the terminal" to everyone who uses it.
+KONSOLE=/usr/share/applications/org.kde.konsole.desktop
+if [ -f "$KONSOLE" ]; then
+    sed -i -e 's|^Name=.*|Name=Terminal|' \
+           -e 's|^GenericName=.*|GenericName=Terminal|' \
+           -e 's|^Comment=.*|Comment=Command line access|' \
+        "$KONSOLE"
+fi
+
+# Drop "KDE ..." phrasing from descriptions of the apps we keep.
+for f in /usr/share/applications/*.desktop; do
+    [ -f "$f" ] || continue
+    sed -i -E \
+        -e 's|^(GenericName(\[[^]]*\])?=)KDE .*|\1|' \
+        -e 's|^(Comment(\[[^]]*\])?=)KDE .*|\1|' \
+        -e 's|^(Name(\[[^]]*\])?=)KDE +|\1|' \
+        "$f" 2>/dev/null || true
+done
+
+# The app grid categories "Development/Graphics/Internet/Office" come from
+# menu XML; harmless. But remove the KDE Connect + Discover notifier autostart
+# entries if their packages are gone.
+for a in /etc/xdg/autostart/kdeconnectd.desktop \
+         /etc/xdg/autostart/org.kde.discover.notifier.desktop; do
+    [ -e "$a" ] && rm -f "$a"
+done
+
+echo "hook: trim done"

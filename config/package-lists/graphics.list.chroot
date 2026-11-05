@@ -3,6 +3,5 @@
 mesa-va-drivers
 intel-media-va-driver-non-free
 i965-va-driver
-libva-utils
 vdpau-driver-all
 firmware-amd-graphics

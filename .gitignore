@@ -24,3 +24,8 @@
 /chroot.packages*
 /live-image-amd64.*
 /binary.modified_timestamps
+.lock
+chroot.installed_tmp_pkgs
+binary.log
+chroot.log
+art/*-mock.png

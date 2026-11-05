@@ -1,0 +1,8 @@
+#!/bin/sh
+# GrantOS System Monitor launcher: start the collector (if needed) + overlay.
+# SPDX-License-Identifier: MIT
+MON=/usr/share/grantos-monitor
+if ! pgrep -f "$MON/collect.py" >/dev/null 2>&1; then
+    nohup python3 "$MON/collect.py" >/dev/null 2>&1 &
+fi
+exec env QML_XHR_ALLOW_FILE_READ=1 qml6 "$MON/main.qml"

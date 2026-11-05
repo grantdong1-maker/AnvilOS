@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=System Monitor
+GenericName=Resources
+Comment=Hardware and process monitor
+Exec=grantos-monitor
+Icon=grantos-anvil
+Terminal=false
+Categories=Qt;System;Monitor;

@@ -63,13 +63,21 @@ if [ -f /usr/share/sddm/themes/breeze/theme.conf ]; then
 fi
 
 # ------------------------------------------------------- avatars (anvil face)
-# Replaces Debian's swirl: this one file is the fallback avatar for both the
-# SDDM greeter and the Plasma lock screen on Debian.
+# Two avatar worlds to overwrite:
+#  - SDDM greeter: /usr/share/sddm/faces/*.face.icon
+#  - Plasma lock screen / About Me: ~/.face, which new homes inherit from
+#    /etc/skel/.face - that file ships as the Debian swirl SVG (package
+#    desktop-base), so skel itself must be replaced, not just sddm faces.
+#    (.face.icon in skel is a symlink -> .face, so fixing .face fixes both.)
 if [ -r /usr/share/grantos-art/avatar.png ]; then
     install -m 644 /usr/share/grantos-art/avatar.png /usr/share/sddm/faces/.face.icon
     install -m 644 /usr/share/grantos-art/avatar.png /usr/share/sddm/faces/forge.face.icon
     install -m 644 /usr/share/grantos-art/avatar.png /usr/share/sddm/faces/root.face.icon
     install -m 644 /usr/share/grantos-art/avatar.png /usr/share/sddm/themes/breeze/faces/.face.icon 2>/dev/null || true
+    install -m 644 /usr/share/grantos-art/avatar.png /etc/skel/.face
+    # in case a home already exists at build time (normally created from skel):
+    install -m 644 /usr/share/grantos-art/avatar.png /home/forge/.face 2>/dev/null || true
+    install -m 644 /usr/share/grantos-art/avatar.png /home/forge/.face.icon 2>/dev/null || true
 fi
 
 # -------------------------------------------------- session startup splash

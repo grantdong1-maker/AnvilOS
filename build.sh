@@ -4,7 +4,7 @@
 # Usage:
 #   ./build.sh            full image: drivers (Intel/AMD/NVIDIA) + Steam + AI/CUDA stack
 #   ./build.sh --gaming   gaming variant: drivers + Steam baked in, no AI/CUDA stack
-#   ./build.sh --lite     minimal test image: base + Mesa/Vulkan, no NVIDIA/CUDA/Steam
+#   ./build.sh --lite     barebones branded desktop: no NVIDIA/CUDA/Steam/dev/wine/flatpak
 #   ./build.sh --help
 #
 # Must run as root (live-build chroot requires it); re-executes itself with sudo.
@@ -20,7 +20,8 @@ GrantOS builder ("anvil" 1.0)
 
   ./build.sh            full image   - Intel/AMD/Mesa + NVIDIA + Steam + AI/CUDA stack
   ./build.sh --gaming   gaming image - Intel/AMD/Mesa + NVIDIA + Steam, no AI/CUDA
-  ./build.sh --lite     mini image   - desktop + Mesa/Vulkan only (fast, small)
+  ./build.sh --lite     mini image   - branded Plasma desktop, no NVIDIA/CUDA/Steam,
+                        no dev toolchain/wine/flatpak, docs/locales stripped
   ./build.sh --help
 
 All variants carry the drivers baked into the image, so installed systems
@@ -83,8 +84,12 @@ disable() {
 case "$VARIANT" in
     lite)   disable package-lists/nvidia.list.chroot
             disable package-lists/ai.list.chroot
+            disable package-lists/dev.list.chroot
+            disable package-lists/gaming-heavy.list.chroot
             disable hooks/live/0300-steam-multilib.hook.chroot ;;
-    gaming) disable package-lists/ai.list.chroot ;;
+    gaming) disable package-lists/ai.list.chroot
+            disable hooks/live/0800-slim.hook.chroot ;;
+    full)   disable hooks/live/0800-slim.hook.chroot ;;
 esac
 if [ "$VARIANT" != full ]; then
     echo "==> variant: $VARIANT (disabled: $(ls "$SCRIPT_DIR/.disabled" 2>/dev/null || echo -))"

@@ -1,0 +1,4 @@
+# Heavy gaming extras: kept in --gaming and full builds, dropped from --lite.
+wine
+flatpak
+linux-headers-amd64

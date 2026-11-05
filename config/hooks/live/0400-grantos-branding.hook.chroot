@@ -72,6 +72,21 @@ if [ -r /usr/share/grantos-art/avatar.png ]; then
     install -m 644 /usr/share/grantos-art/avatar.png /usr/share/sddm/themes/breeze/faces/.face.icon 2>/dev/null || true
 fi
 
+# -------------------------------------------------- session startup splash
+# The brief "Plasma made by KDE" screen between Plymouth and the desktop is
+# the look-and-feel splash; swap in the GrantOS one (package-owned path, so
+# this must happen in a hook, not via includes).
+LF_DIR=/usr/share/plasma/look-and-feel/org.kde.breeze.desktop/contents/splash
+if [ -d "$LF_DIR" ] && [ -r /usr/share/grantos-art/Splash.qml ]; then
+    install -m 644 /usr/share/grantos-art/Splash.qml "$LF_DIR/Splash.qml"
+fi
+
+# ------------------------------------------------------------- Welcome Center
+# Debian's plasma-welcome is Konqi-and-KDE-branded and not configurable;
+# it is only a Recommends of plasma-desktop, so removing it is safe.
+apt-get purge -y plasma-welcome >/dev/null 2>&1 || true
+apt-get autoremove -y >/dev/null 2>&1 || true
+
 # ------------------------------------------------------------------ Plymouth
 if [ -f /usr/share/plymouth/themes/grantos/grantos.plymouth ]; then
     plymouth-set-default-theme grantos || true

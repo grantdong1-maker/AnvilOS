@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b3033"/>
+      <stop offset="0.45" stop-color="#383e42"/>
+      <stop offset="1" stop-color="#1c1f22"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="480" fill="url(#bg)"/>
+  <g transform="translate(72,26)">
+    <polygon points="60.0,140.0 503.2,132.0 503.2,167.2 424.0,176.0 379.2,264.0 260.8,264.0 244.8,176.0" fill="#969ba1"/>
+    <polygon points="368.0,134.4 503.2,133.6 503.2,167.2 424.0,176.0 379.2,262.0 368.0,176.0" fill="#6c727a"/>
+    <polygon points="60.0,140.0 503.2,131.2 503.2,137.6 70.4,144.8" fill="#c2c6ca"/>
+    <polygon points="280.0,262.0 360.0,262.0 372.0,298.0 268.0,298.0" fill="#8b9199"/>
+    <polygon points="222.4,296.8 417.6,296.8 441.6,332.0 198.4,332.0" fill="#a2a8af"/>
+    <polygon points="222.4,296.8 248.0,296.8 248.0,332.0 198.4,332.0" fill="#d67a3c"/>
+  </g>
+  <g font-family="DejaVu Sans" fill="#e8eaea">
+    <text x="300" y="96" font-size="21" font-weight="bold">GrantOS @VERSION@ (anvil)</text>
+    <text x="300" y="120" font-size="13">@ARCHITECTURE@</text>
+    <text x="300" y="150" font-size="11" fill="#b9bec4">Built: @DATE@</text>
+    <text x="300" y="168" font-size="9" fill="#8b9199">kernel @LINUX_VERSIONS@</text>
+    <text x="300" y="184" font-size="9" fill="#8b9199">live-boot @LIVE_BOOT_VERSION@ - live-build @LIVE_BUILD_VERSION@</text>
+  </g>
+</svg>

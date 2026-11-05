@@ -1,7 +1,7 @@
 desktop-image: "../splash.png"
 title-color: "#e8eaea"
 title-font: "Unifont Regular 16"
-title-text: "GrantOS 1.0 (anvil)"
+title-text: ""
 message-font: "Unifont Regular 16"
 terminal-font: "Unifont Regular 16"
 

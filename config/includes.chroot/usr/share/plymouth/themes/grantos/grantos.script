@@ -184,19 +184,28 @@ logo = Image("logo.png");
 frill = Image("frill.png");
 glow = Image("glow.png");
 
-frilldim = calcfmt(frill,logo);
+# GrantOS layout: anvil centred and large, static ember glow behind it.
+# The frill/glow animation code below keeps running on transparent frill,
+# which is invisible and cheap.
+gpx0 = Window.GetWidth();
+gpy0 = Window.GetHeight();
 
-frill = frill.Scale(frilldim.frill.xsize, frilldim.frill.ysize);
-frill_sprite = Sprite(frill);
-frill_sprite.SetPosition(frilldim.frill.x,frilldim.frill.y,-2);
+logo_w = 0.34 * gpx0;
+logo_h = (logo_w / logo.GetWidth()) * logo.GetHeight();
+logo = logo.Scale(logo_w, logo_h);
 
-glow = glow.Scale(frilldim.frill.xsize, frilldim.frill.ysize);
+glow_w = logo_w * 1.9;
+glow_h = logo_h * 2.4;
+glow = glow.Scale(glow_w, glow_h);
 glow_sprite = Sprite(glow);
-glow_sprite.SetPosition(frilldim.frill.x,frilldim.frill.y,-1);
+glow_sprite.SetPosition((gpx0 - glow_w) / 2, (gpy0 - glow_h) / 2, -2);
 
-logo = logo.Scale(frilldim.logo.xsize,frilldim.logo.ysize);
+frill = frill.Scale(1, 1);
+frill_sprite = Sprite(frill);
+frill_sprite.SetPosition(0, 0, -3);
+
 logo_sprite = Sprite(logo);
-logo_sprite.SetPosition(frilldim.logo.x,frilldim.logo.y,-4);
+logo_sprite.SetPosition((gpx0 - logo_w) / 2, (gpy0 - logo_h) / 2, -4);
 
 
 #------------------------------String functions-------------------------------

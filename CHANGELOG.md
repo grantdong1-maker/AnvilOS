@@ -13,6 +13,7 @@
 - Art sources committed under `art/` (`gen_art.py` regenerates wallpaper, logo, GRUB splash, Plymouth assets).
 - Launcher button icon = anvil (hicolor theme icon + first-login retarget).
 - **Build variants**: `--lite` (desktop + Mesa only), `--gaming` (drivers + Steam baked in, no AI/CUDA), default full (+ AI/CUDA). GPU drivers for Intel/AMD are baked into every variant (VAAPI/VDPAU + video firmware); NVIDIA via Debian's nvidia-driver in gaming/full. Steam (Valve's `steam-installer`) + i386 runtime baked into gaming/full via hook.
+- `--lite` is now a barebones branded desktop: wine/flatpak/kernel-headers moved to a gaming-heavy list, dev toolchain dropped, and a lite-only hook strips non-English locales, man/info pages and package docs (copyrights kept).
 
 ## 1.0.0 "anvil" — 2026-11-04
 

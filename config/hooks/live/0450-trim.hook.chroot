@@ -12,6 +12,7 @@ apt-get purge -y \
     kde-baseapps konqueror konq-plugins kfind kwrite \
     partitionmanager plasma-disks \
     kwalletmanager kdeconnect \
+    khelpcenter kmenuedit kde-inotify-survey \
     >/dev/null 2>&1 || true
 apt-get autoremove -y --purge >/dev/null 2>&1 || true
 
@@ -22,6 +23,24 @@ if [ -f "$KONSOLE" ]; then
            -e 's|^GenericName=.*|GenericName=Terminal|' \
            -e 's|^Comment=.*|Comment=Command line access|' \
         "$KONSOLE"
+fi
+
+# Rename the kept K-branded apps to plain, functional names.
+rename_app() {
+    f="/usr/share/applications/$1"
+    [ -f "$f" ] || return 0
+    sed -i -e "s|^Name=.*|Name=$2|" \
+           -e "s|^GenericName=.*|GenericName=$3|" \
+           -e "s|^Comment=.*|Comment=$4|" "$f"
+}
+rename_app org.kde.kate.desktop          "Text Editor" "Text Editor" "Edit text files"
+rename_app org.kde.dolphin.desktop       "Dolphin"     "Files"       "Browse files and folders"
+rename_app steam.desktop                 "Steam"       "Games"       "Gaming platform"
+rename_app org.kde.kinfocenter.desktop   "Info Center" "About this system" "System information"
+
+# The old KF5 system-settings entry duplicates System Settings.
+if [ -f /usr/share/applications/kdesystemsettings.desktop ]; then
+    sed -i -e '/^NoDisplay=/d' -e '$a NoDisplay=true' /usr/share/applications/kdesystemsettings.desktop
 fi
 
 # Drop "KDE ..." phrasing from descriptions of the apps we keep.

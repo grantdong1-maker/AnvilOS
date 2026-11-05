@@ -1,0 +1,8 @@
+# Hardware video accceleration + Vulkan for Intel and AMD GPUs.
+# NVIDIA ships via nvidia.list.chroot (gaming/full variants).
+mesa-va-drivers
+intel-media-va-driver-non-free
+i965-va-driver
+libva-utils
+vdpau-driver-all
+firmware-amd-graphics

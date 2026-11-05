@@ -11,6 +11,8 @@
   - fastfetch config with ASCII anvil; terminal banner says GrantOS.
 - Boot/boot-chain hardening: kernel-consistency pin kept (single 6.12.115+deb13.1-amd64 pair).
 - Art sources committed under `art/` (`gen_art.py` regenerates wallpaper, logo, GRUB splash, Plymouth assets).
+- Launcher button icon = anvil (hicolor theme icon + first-login retarget).
+- **Build variants**: `--lite` (desktop + Mesa only), `--gaming` (drivers + Steam baked in, no AI/CUDA), default full (+ AI/CUDA). GPU drivers for Intel/AMD are baked into every variant (VAAPI/VDPAU + video firmware); NVIDIA via Debian's nvidia-driver in gaming/full. Steam (Valve's `steam-installer`) + i386 runtime baked into gaming/full via hook.
 
 ## 1.0.0 "anvil" — 2026-11-04
 

@@ -1,0 +1,26 @@
+#!/bin/sh
+# Hook: Bake Steam + 32-bit (i386) runtime into the image.
+# Runs in the gaming and full variants; --lite moves this file to .disabled.
+set -e
+
+echo "hook: GrantOS steam + 32-bit gaming runtime"
+
+# Steam is 32-bit; multiarch must exist before its packages can resolve.
+dpkg --add-architecture i386
+apt-get update
+
+STEEP=""
+if apt-get install -y --no-install-recommends steam-installer >/dev/null 2>&1; then
+    STEEP=steam-installer
+elif apt-get install -y --no-install-recommends steam >/dev/null 2>&1; then
+    STEEP=steam
+else
+    echo "hook: steam package unavailable; keeping 32-bit runtime only"
+fi
+[ -n "$STEEP" ] && echo "hook: installed $STEEP"
+
+# 32-bit Vulkan/OpenGL bits used by Valve's runtime and older Windows/Proton
+# fallbacks. Best effort: archive mirrors sometimes lag on i386.
+apt-get install -y --no-install-recommends \
+    mesa-vulkan-drivers:i386 libgl1:i386 libdrm2:i386 \
+    >/dev/null 2>&1 || echo "hook: some i386 GL/vulkan packages skipped"

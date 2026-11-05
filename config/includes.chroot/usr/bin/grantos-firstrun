@@ -11,5 +11,24 @@ plasma-apply-colorscheme GrantOSDark >/dev/null 2>&1 || true
 plasma-apply-desktoptheme breeze-dark >/dev/null 2>&1 || true
 plasma-apply-wallpaperimage /usr/share/wallpapers/grantos/contents/images/1920x1080.png >/dev/null 2>&1 || true
 
+# Application launcher button -> anvil icon.
+# The panel layout is created by Plasma at first login, so we rewrite the
+# generated config for every launcher applet found, then restart the shell.
+cfg="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
+if [ -f "$cfg" ]; then
+    for plug in org.kde.plasma.kicker org.kde.plasma.kickoff; do
+        grp=$(awk -F= -v p="$plug" \
+            '/^\[/{g=$0} ($1 ~ /^plugin$/) && ($2==p){print g; exit}' "$cfg")
+        [ -n "$grp" ] || continue
+        cnum=$(printf '%s' "$grp" | sed -n 's/^\[Containments\]\[\([0-9]*\)\].*/\1/p')
+        aid=$(printf '%s' "$grp" | sed -n 's/.*\[Applets\]\[\([^]]*\)\].*/\1/p')
+        [ -n "$cnum" ] && [ -n "$aid" ] && \
+        kwriteconfig6 --file "$cfg" --group Containments --group "$cnum" \
+            --group Applets --group "$aid" --group Configuration \
+            --group General --key icon grantos-anvil
+    done
+    systemctl --user restart plasma-plasmashell.service >/dev/null 2>&1 || true
+fi
+
 mkdir -p "$HOME/.config"
 touch "$HOME/.config/grantos-initialized"

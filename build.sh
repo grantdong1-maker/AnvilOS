@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# Forge Linux ISO build wrapper.
+# GrantOS ISO build wrapper.
 #
 # Usage:
-#   ./build.sh           build the full gaming + AI image
-#   ./build.sh --lite    skip nvidia/cuda/ai package lists (smaller image)
+#   ./build.sh            full image: drivers (Intel/AMD/NVIDIA) + Steam + AI/CUDA stack
+#   ./build.sh --gaming   gaming variant: drivers + Steam baked in, no AI/CUDA stack
+#   ./build.sh --lite     minimal test image: base + Mesa/Vulkan, no NVIDIA/CUDA/Steam
 #   ./build.sh --help
 #
 # Must run as root (live-build chroot requires it); re-executes itself with sudo.
@@ -15,11 +16,15 @@ UNRECOGNISED=()
 
 usage() {
     cat <<'EOT'
-Forge Linux builder
+GrantOS builder ("anvil" 1.0)
 
-  ./build.sh            full image (NVIDIA driver + CUDA + PyTorch included)
-  ./build.sh --lite     skip nvidia.list + ai.list package lists
+  ./build.sh            full image   - Intel/AMD/Mesa + NVIDIA + Steam + AI/CUDA stack
+  ./build.sh --gaming   gaming image - Intel/AMD/Mesa + NVIDIA + Steam, no AI/CUDA
+  ./build.sh --lite     mini image   - desktop + Mesa/Vulkan only (fast, small)
   ./build.sh --help
+
+All variants carry the drivers baked into the image, so installed systems
+get working GPU support without downloading anything.
 EOT
 }
 
@@ -29,8 +34,9 @@ die() { echo "error: $*" >&2; exit 1; }
 restore_disabled() {
     if [ -d "$SCRIPT_DIR/.disabled" ]; then
         mv "$SCRIPT_DIR"/.disabled/*.list.chroot "$SCRIPT_DIR/config/package-lists/" 2>/dev/null || true
+        mv "$SCRIPT_DIR"/.disabled/*.hook.chroot "$SCRIPT_DIR/config/hooks/live/" 2>/dev/null || true
         rmdir "$SCRIPT_DIR/.disabled" 2>/dev/null || true
-        echo "restored disabled package lists"
+        echo "restored disabled package lists / hooks"
     fi
 }
 trap restore_disabled EXIT INT TERM
@@ -38,13 +44,19 @@ trap restore_disabled EXIT INT TERM
 
 while [ $# -gt 0 ]; do
     case "$1" in
+        --gaming) GAMING=1 ;;
         --lite) LITE=1 ;;
         -h|--help) usage; exit 0 ;;
         *) UNRECOGNISED+=("$1") ;;
     esac
     shift
 done
-[ ${#UNRECOGNISED[@]} -eq 0 ] || die "unknown option: ${UNRECOGNISED[*]}"
+[ ${#UNRECOGNISED[@]} -eq 0 ] 2>/dev/null || { usage >&2; die "unknown option: ${UNRECOGNISED[*]}"; }
+[ "${GAMING:-0}" -eq 0 ] || [ "${LITE:-0}" -eq 0 ] || die "--gaming and --lite are mutually exclusive"
+
+VARIANT=full
+[ "${GAMING:-0}" -eq 1 ] && VARIANT=gaming
+[ "${LITE:-0}" -eq 1 ] && VARIANT=lite
 
 # live-build needs root to enter the chroot.
 if [ "$(id -u)" -ne 0 ]; then
@@ -63,13 +75,19 @@ if [ "${AVAILABLE:-0}" -lt 20 ]; then
     echo "warning: only ${AVAILABLE} GiB free in $(basename "$SCRIPT_DIR"); a full build needs ~20 GiB"
 fi
 
-if [ "${LITE:-0}" -eq 1 ]; then
-    mkdir -p "$SCRIPT_DIR/.disabled"
-    for list in nvidia ai; do
-        src="$SCRIPT_DIR/config/package-lists/${list}.list.chroot"
-        [ -f "$src" ] && mv "$src" "$SCRIPT_DIR/.disabled/"
-    done
-    echo "--lite mode: nvidia/ai package lists disabled for this build"
+mkdir -p "$SCRIPT_DIR/.disabled"
+disable() {
+    src="$SCRIPT_DIR/config/$1"
+    [ -f "$src" ] && mv "$src" "$SCRIPT_DIR/.disabled/"
+}
+case "$VARIANT" in
+    lite)   disable package-lists/nvidia.list.chroot
+            disable package-lists/ai.list.chroot
+            disable hooks/live/0300-steam-multilib.hook.chroot ;;
+    gaming) disable package-lists/ai.list.chroot ;;
+esac
+if [ "$VARIANT" != full ]; then
+    echo "==> variant: $VARIANT (disabled: $(ls "$SCRIPT_DIR/.disabled" 2>/dev/null || echo -))"
 fi
 
 cd "$SCRIPT_DIR"
@@ -83,5 +101,5 @@ ISO_LIVE="$SCRIPT_DIR/live-image-amd64.hybrid.iso"
 [ -n "$ISO_LIVE" ] || die "build reported success but no iso found"
 
 sha256sum "$ISO_LIVE" > "$ISO_LIVE.sha256"
-echo "==> done"
+echo "==> done ($VARIANT build)"
 ls -lh "$ISO_LIVE" "$ISO_LIVE.sha256"

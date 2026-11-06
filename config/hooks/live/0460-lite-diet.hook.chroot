@@ -1,0 +1,29 @@
+# GrantOS light-variant diet: config overrides to make barebones lite run
+# comfortably on 2 GiB RAM / 2 threads. Runs only for lite (build.sh disables
+# this hook for gaming/full). No package changes here except those shared via
+# package-lists; this only tunes runtime behaviour.
+
+# ---- KDE animation/compositing: near-zero animation, no blur/contrast -----
+# These are the two biggest compositor CPU consumers on 2-core machines
+# (especially with software GL on low-end GPUs), and they cost memory.
+cat >> /etc/skel/.config/kwinrc <<'EOF'
+[Compositing]
+AnimationDurationFactor=0.0
+[Plugins]
+blurEnabled=false
+backgroundcontrastEnabled=false
+EOF
+
+cat >> /etc/skel/.config/kdeglobals <<'EOF'
+
+[KDE]
+AnimationDurationFactor=0.0
+EOF
+
+# ---- panel opacity: no translucent panel = fewer per-frame effects --------
+# Plasma's default panel blends the desktoptheme; leave that to the theme
+# itself, but kill the extra adaptive-opacity animation:
+cat >> /etc/skel/.config/plasmarc <<'EOF'
+[Theme]
+default-background-opacity=1
+EOF

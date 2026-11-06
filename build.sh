@@ -88,8 +88,10 @@ case "$VARIANT" in
             disable package-lists/gaming-heavy.list.chroot
             disable hooks/live/0300-steam-multilib.hook.chroot ;;
     gaming) disable package-lists/ai.list.chroot
+            disable hooks/live/0460-lite-diet.hook.chroot
             disable hooks/live/0800-slim.hook.chroot ;;
-    full)   disable hooks/live/0800-slim.hook.chroot ;;
+    full)   disable hooks/live/0460-lite-diet.hook.chroot
+            disable hooks/live/0800-slim.hook.chroot ;;
 esac
 if [ "$VARIANT" != full ]; then
     echo "==> variant: $VARIANT (disabled: $(ls "$SCRIPT_DIR/.disabled" 2>/dev/null || echo -))"

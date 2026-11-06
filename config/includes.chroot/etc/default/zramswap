@@ -1,0 +1,4 @@
+# Compressed RAM swap (zram) — kept small Reserve on low-RAM machines.
+# zram-tools ships lz4 by default; zstd compresses better for the same CPU.
+ALGO=zstd
+PERCENT=50

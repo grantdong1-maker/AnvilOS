@@ -16,7 +16,11 @@ for v in "${VARIANTS[@]}"; do
     echo "==> [$v] lb clean"
     lb clean
     echo "==> [$v] build"
-    bash build.sh "--$v"
+    if [ "$v" = "full" ]; then
+        bash build.sh    # full is build.sh's default target (no --full flag)
+    else
+        bash build.sh "--$v"
+    fi
     src=live-image-amd64.hybrid.iso
     dst="grantos-${VERSION}-${v}-amd64.iso"
     [ -f "$src" ] || { echo "E: no ISO produced for $v"; exit 1; }

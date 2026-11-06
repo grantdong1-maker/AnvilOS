@@ -50,7 +50,7 @@ ln -sf /etc/systemd/system/grantos-branding.service \
 install -d /etc/sddm.conf.d
 cat > /etc/sddm.conf.d/zz-grantos-branding.conf <<'EOF'
 [Theme]
-Current=breeze
+Current=grantos
 EOF
 # Breeze greeter: forge-glow wallpaper behind the login box, ember accent text.
 # NOTE: key spellings in this file are lowercase; QSettings matches
@@ -79,6 +79,16 @@ if [ -r /usr/share/grantos-art/avatar.png ]; then
     install -m 644 /usr/share/grantos-art/avatar.png /home/forge/.face 2>/dev/null || true
     install -m 644 /usr/share/grantos-art/avatar.png /home/forge/.face.icon 2>/dev/null || true
 fi
+
+# -------------------------------------------------- software center rebrand
+# Discover is KDE's app; GrantOS ships it as "GrantOS Software" (icon comes
+# from the grantos icon theme override).
+for d in org.kde.discover.desktop org.kde.discover.urlhandler.desktop; do
+    [ -f /usr/share/applications/"$d" ] || continue
+    sed -i -e 's/^Name=.*/Name=GrantOS Software/' \
+           -e 's/^GenericName=.*/GenericName=Software/' \
+        /usr/share/applications/"$d"
+done
 
 # -------------------------------------------------- session startup splash
 # The brief "Plasma made by KDE" screen between Plymouth and the desktop is

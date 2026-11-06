@@ -29,3 +29,4 @@ chroot.installed_tmp_pkgs
 binary.log
 chroot.log
 art/*-mock.png
+release-parts/

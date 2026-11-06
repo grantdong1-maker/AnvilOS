@@ -1,4 +1,4 @@
-# GrantOS light-variant diet: config overrides to make barebones lite run
+# AnvilOS light-variant diet: config overrides to make barebones lite run
 # comfortably on 2 GiB RAM / 2 threads. Runs only for lite (build.sh disables
 # this hook for gaming/full). No package changes here except those shared via
 # package-lists; this only tunes runtime behaviour.

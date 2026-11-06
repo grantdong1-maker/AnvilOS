@@ -1,9 +1,9 @@
 [Desktop Entry]
-Name=GrantOS Anvil
-Name[en_AU]=GrantOS Anvil
-X-KDE-PluginInfo-Author=GrantOS Project
-X-KDE-PluginInfo-Email=grant@grantos.invalid
-X-KDE-PluginInfo-Name=grantos-anvil
+Name=AnvilOS Anvil
+Name[en_AU]=AnvilOS Anvil
+X-KDE-PluginInfo-Author=AnvilOS Project
+X-KDE-PluginInfo-Email=grant@anvilos.invalid
+X-KDE-PluginInfo-Name=anvilos-anvil
 X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-License=MIT
 X-KDE-PluginInfo-EnabledByDefault=true

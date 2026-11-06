@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=AnvilOS
+Description=AnvilOS 1.0 (anvil) boot splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/anvilos
+ScriptFile=/usr/share/plymouth/themes/anvilos/anvilos.script

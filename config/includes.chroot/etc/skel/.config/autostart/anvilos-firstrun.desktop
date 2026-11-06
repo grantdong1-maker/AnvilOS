@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=AnvilOS first-run setup
+Comment=Applies the AnvilOS wallpaper, color scheme and desktop theme on first login
+Exec=/usr/bin/anvilos-firstrun
+NoDisplay=true
+X-KDE-StartupNotify=false

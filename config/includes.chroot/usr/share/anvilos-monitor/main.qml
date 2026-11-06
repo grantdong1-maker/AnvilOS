@@ -1,8 +1,8 @@
 /*
-    GrantOS System Monitor — rugged-tablet style hardware + process overlay.
+    AnvilOS System Monitor — rugged-tablet style hardware + process overlay.
     Frameless, always-on-top, draggable. Tabs: Overview (sensors + graphs)
     and Processes (live table with end-task). Data + kill channel come from
-    /usr/share/grantos-monitor/collect.py.
+    /usr/share/anvilos-monitor/collect.py.
     Runs on the Qt6 qml6 runtime in the image; versioned imports keep it
     Qt5-compatible too (useful for quick host previews).
     SPDX-License-Identifier: MIT
@@ -54,8 +54,8 @@ Window {
     property bool sortDesc: true
     property int sel: -1
     property var hist: ({ gpu: [], cpu: [], temp: [], clk: [] })
-    readonly property string dataPath: "file:///run/user/1000/grantos-monitor.json"
-    readonly property string dataFallback: "file:///tmp/grantos-monitor.json"
+    readonly property string dataPath: "file:///run/user/1000/anvilos-monitor.json"
+    readonly property string dataFallback: "file:///tmp/anvilos-monitor.json"
     property bool useFallback: false
 
     function resort() {
@@ -664,14 +664,14 @@ Window {
     }
 
     // ---- preview/snap mode (testing only) -----------------------------------
-    // /tmp/grantos-hud-snap containing "1" (overview) or "2" (processes):
+    // /tmp/anvilos-hud-snap containing "1" (overview) or "2" (processes):
     // render once, save a PNG, exit.
     Timer {
         id: snapTimer
         interval: 800
         onTriggered: {
             win.contentItem.grabToImage(function (r) {
-                r.saveToFile("/tmp/grantos-hud-preview" + (win.tab === 1 ? "-procs" : "") + ".png")
+                r.saveToFile("/tmp/anvilos-hud-preview" + (win.tab === 1 ? "-procs" : "") + ".png")
                 Qt.exit(0)
             })
         }
@@ -680,7 +680,7 @@ Window {
     Component.onCompleted: {
         poll()
         var probe = new XMLHttpRequest()
-        probe.open("GET", "file:///tmp/grantos-hud-snap", false)
+        probe.open("GET", "file:///tmp/anvilos-hud-snap", false)
         try { probe.send() } catch (e) { return }
         if (probe.responseText.indexOf("1") === -1 && probe.responseText.indexOf("2") === -1) return
         if (probe.responseText.indexOf("2") !== -1) win.tab = 1

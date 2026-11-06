@@ -1,0 +1,6 @@
+[General]
+name=AnvilOS
+author=AnvilOS
+website=https://github.com/grantdong1-maker/AnvilOS
+version=1.0
+main=Main.qml

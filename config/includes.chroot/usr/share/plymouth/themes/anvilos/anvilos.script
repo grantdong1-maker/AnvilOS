@@ -184,7 +184,7 @@ logo = Image("logo.png");
 frill = Image("frill.png");
 glow = Image("glow.png");
 
-# GrantOS layout: anvil centred and large, static ember glow behind it.
+# AnvilOS layout: anvil centred and large, static ember glow behind it.
 # The frill/glow animation code below keeps running on transparent frill,
 # which is invisible and cheap.
 gpx0 = Window.GetWidth();

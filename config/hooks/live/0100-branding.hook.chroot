@@ -1,16 +1,16 @@
 #!/bin/sh
-# Hook: GrantOS identity + terminal banner files inside the image.
+# Hook: AnvilOS identity + terminal banner files inside the image.
 set -e
 
-echo "hook: writing GrantOS identity files"
+echo "hook: writing AnvilOS identity files"
 
-# Legacy file name kept (gforge reads it); values now say GrantOS.
-printf 'FORGE_OS=GrantOS\nFORGE_VERSION=1.0.0\nFORGE_CODENAME=anvil\nBASE_DEBIAN=13 (trixie)\n' > /etc/forge-release
-chmod 644 /etc/forge-release
+# Legacy file name kept (gforge reads it); values now say AnvilOS.
+printf 'ANVILOS_NAME=AnvilOS\nANVILOS_VERSION=1.0.0\nANVILOS_CODENAME=anvil\nBASE_DEBIAN=13 (trixie)\n' > /etc/anvilos-release
+chmod 644 /etc/anvilos-release
 
 install -d /usr/share/forge /var/lib/forge
 cat > /usr/share/forge/banner.txt <<'EOF'
-GrantOS 1.0 ("anvil") -- Debian 13 base
+AnvilOS 1.0 (Hammer) -- Debian 13 base
 tuned for gaming + AI training; try 'gforge status' or 'gforge doctor'
 EOF
 chmod 644 /usr/share/forge/banner.txt

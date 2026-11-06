@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# GrantOS ISO build wrapper.
+# AnvilOS ISO build wrapper.
 #
 # Usage:
 #   ./build.sh            full image: drivers (Intel/AMD/NVIDIA) + Steam + AI/CUDA stack
@@ -16,7 +16,7 @@ UNRECOGNISED=()
 
 usage() {
     cat <<'EOT'
-GrantOS builder ("anvil" 1.0)
+AnvilOS builder (1.0 — Hammer)
 
   ./build.sh            full image   - Intel/AMD/Mesa + NVIDIA + Steam + AI/CUDA stack
   ./build.sh --gaming   gaming image - Intel/AMD/Mesa + NVIDIA + Steam, no AI/CUDA

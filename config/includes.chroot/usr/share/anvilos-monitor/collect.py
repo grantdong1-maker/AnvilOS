@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""GrantOS System Monitor collector.
+"""AnvilOS System Monitor collector.
 
 Samples sensors + the process table once per second and writes JSON to
-/run/user/<uid>/grantos-monitor.json (and /tmp fallback) for the QML
+/run/user/<uid>/anvilos-monitor.json (and /tmp fallback) for the QML
 overlay. Also serves a localhost-only control endpoint so the UI can
 end tasks (QML cannot spawn processes itself):
 
@@ -22,7 +22,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs, urlparse
 
 UID = os.getuid()
-PATHS = [f"/run/user/{UID}/grantos-monitor.json", "/tmp/grantos-monitor.json"]
+PATHS = [f"/run/user/{UID}/anvilos-monitor.json", "/tmp/anvilos-monitor.json"]
 HZ = os.sysconf("SC_CLK_TCK")
 PORT = 47823
 

@@ -1,12 +1,12 @@
 [Unit]
-Description=GrantOS branding fixes (live user display name)
+Description=AnvilOS branding fixes (live user display name)
 After=live-config.service
 # No-op on installed (non-live) systems: live user only exists there.
 ConditionPathExists=/run/live
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/grantos-brand
+ExecStart=/usr/bin/anvilos-brand
 RemainAfterExit=yes
 
 [Install]

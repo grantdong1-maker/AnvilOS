@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 
-// GrantOS login screen: chamfered gunmetal card with two-tone ember trim,
+// AnvilOS login screen: chamfered gunmetal card with two-tone ember trim,
 // matching the System Monitor / boot art language. No decorative glow.
 Rectangle {
     id: root
@@ -81,7 +81,7 @@ Rectangle {
             x: 74; y: 18
             spacing: 2
             Text {
-                text: "GrantOS"
+                text: "AnvilOS"
                 color: "#e8eaeb"
                 font.pixelSize: 22
                 font.bold: true
@@ -89,7 +89,7 @@ Rectangle {
                 font.letterSpacing: 2
             }
             Text {
-                text: "1.0 — anvil"
+                text: "1.0 — Hammer"
                 color: "#8b9296"
                 font.pixelSize: 11
                 font.family: "Inter"
@@ -113,7 +113,7 @@ Rectangle {
             }
         }
 
-        // user selection (single-user GrantOS: one chip; still handles more)
+        // user selection (single-user AnvilOS: one chip; still handles more)
         ListView {
             id: userList
             model: userModel

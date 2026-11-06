@@ -1,5 +1,5 @@
 #!/bin/sh
-# Make the live user's display name read "GrantOS User" instead of the
+# Make the live user's display name read "AnvilOS User" instead of the
 # Debian default, so SDDM / lock screen show the right identity.
 set -e
 
@@ -9,5 +9,5 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 if id "$USER_NAME" >/dev/null 2>&1; then
-    usermod -c "GrantOS User" "$USER_NAME"
+    usermod -c "AnvilOS User" "$USER_NAME"
 fi

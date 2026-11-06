@@ -1,8 +1,8 @@
 /*
-    GrantOS session startup splash.
+    AnvilOS session startup splash.
     Based on KDE's breeze Splash.qml (SPDX-FileCopyrightText: 2014 Marco Martin
     <mart@kde.org>, SPDX-License-Identifier: GPL-2.0-or-later), rebranded:
-    anvil mark, GrantOS caption, no KDE branding.
+    anvil mark, AnvilOS caption, no KDE branding.
 */
 
 import QtQuick
@@ -36,7 +36,7 @@ Rectangle {
             width: parent.width * 0.42
             fillMode: Image.PreserveAspectFit
             asynchronous: true
-            source: "/usr/share/grantos-art/plymouth-logo.png"
+            source: "/usr/share/anvilos-art/plymouth-logo.png"
         }
 
         Image {
@@ -63,7 +63,7 @@ Rectangle {
                 margins: Kirigami.Units.gridUnit
             }
             color: "#8b9199"
-            text: "GrantOS 1.0 \u2014 anvil"
+            text: "AnvilOS 1.0 \u2014 anvil"
         }
     }
 

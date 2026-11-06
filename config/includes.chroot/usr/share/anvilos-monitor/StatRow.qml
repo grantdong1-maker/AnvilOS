@@ -1,5 +1,5 @@
 /*
-    GrantOS System Monitor — one instrument row: label, load bar,
+    AnvilOS System Monitor — one instrument row: label, load bar,
     right-aligned big value, unit.
     SPDX-License-Identifier: MIT
 */

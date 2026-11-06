@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate GrantOS anvil branding art: wallpapers + logo (Pillow only)."""
+"""Generate AnvilOS anvil branding art: wallpapers + logo (Pillow only)."""
 from PIL import Image, ImageDraw, ImageFilter
 import math, os
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-# GrantOS: build variants sequentially and keep every artifact.
+# AnvilOS: build variants sequentially and keep every artifact.
 # Each lb build overwrites live-image-amd64.hybrid.iso, so this renames
 # (and re-checksums) the ISO per variant before cleaning for the next.
 #
@@ -22,7 +22,7 @@ for v in "${VARIANTS[@]}"; do
         bash build.sh "--$v"
     fi
     src=live-image-amd64.hybrid.iso
-    dst="grantos-${VERSION}-${v}-amd64.iso"
+    dst="anvilos-${VERSION}-${v}-amd64.iso"
     [ -f "$src" ] || { echo "E: no ISO produced for $v"; exit 1; }
     mv "$src" "$dst"
     sha256sum "$dst" > "$dst.sha256"
@@ -31,4 +31,4 @@ done
 
 echo
 echo "All variants:"
-ls -lh grantos-${VERSION}-*-amd64.iso
+ls -lh anvilos-${VERSION}-*-amd64.iso

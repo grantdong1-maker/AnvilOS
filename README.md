@@ -1,4 +1,4 @@
-# GrantOS 1.0 "anvil"
+# AnvilOS 1.0 "Hammer"
 
 An OS built with the help of AI, optimised for AI and gaming. Built upon **Debian 13 (trixie)** using **live-build**.
 
@@ -22,8 +22,8 @@ GitHub release assets are capped at 2 GB, so each ISO is shipped split
 want into one folder, assemble, and verify:
 
 ```bash
-cat grantos-1.0.0-gaming-amd64.iso.part-* > grantos-1.0.0-gaming-amd64.iso
-sha256sum -c grantos-1.0.0-gaming-amd64.iso.sha256
+cat anvilos-1.0.0-gaming-amd64.iso.part-* > anvilos-1.0.0-gaming-amd64.iso
+sha256sum -c anvilos-1.0.0-gaming-amd64.iso.sha256
 ```
 
 Then flash to USB (≥8 GB, ≥32 GB for full) with your image writer of choice
@@ -35,8 +35,8 @@ and boot it. User: `forge`, password: `live`.
 Requirements: Debian (or a host with `debootstrap` + Debian's `live-build 20250814+`; Ubuntu's live-build is too old), ~20 GiB free disk, sudo.
 
 ```bash
-git clone https://github.com/grantdong1-maker/GrantOS.git
-cd GrantOS
+git clone https://github.com/grantdong1-maker/AnvilOS.git
+cd AnvilOS
 
 # ~3.1 GiB ISO — everything except NVIDIA/CUDA/AI packages
 sudo bash build.sh --lite
@@ -84,4 +84,4 @@ MIT — see `LICENSE`. Covers this repo's build system and scripts; the produced
 
 ## Status
 
-v1.0.0 "anvil" — Debian trixie snapshot; live ISO verified in VirtualBox.
+v1.0.0 Hammer — Debian trixie snapshot; live ISO verified in VirtualBox.

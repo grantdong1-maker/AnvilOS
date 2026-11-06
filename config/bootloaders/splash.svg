@@ -18,7 +18,7 @@
   </g>
   <rect x="80" y="230" width="480" height="190" fill="#0d0f11" opacity="0.62"/>
   <g font-family="DejaVu Sans" fill="#ffffff">
-    <text x="300" y="96" font-size="21" font-weight="bold">GrantOS @VERSION@ (anvil)</text>
+    <text x="300" y="96" font-size="21" font-weight="bold">AnvilOS @VERSION@ (Hammer)</text>
     <text x="300" y="120" font-size="13">@ARCHITECTURE@</text>
     <text x="300" y="150" font-size="11" fill="#c8ccd1">Built: @DATE@</text>
     <text x="300" y="168" font-size="9" fill="#9aa0a6">kernel @LINUX_VERSIONS@</text>

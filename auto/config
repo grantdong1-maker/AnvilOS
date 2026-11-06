@@ -13,9 +13,9 @@ lb config noauto \
 	--firmware-binary true \
 	--firmware-chroot true \
 	--apt-recommends true \
-	--iso-application "GrantOS 1.0 (anvil)" \
-	--iso-publisher "GrantOS Project; https://grantos.invalid/; grant@grantos.invalid" \
-	--iso-volume "grantos-1.0.0-amd64" \
-	--bootappend-live "boot=live components username=forge hostname=grantos quiet splash locales=en_US.UTF-8 keyboard-layouts=us" \
+	--iso-application "AnvilOS 1.0 (anvil)" \
+	--iso-publisher "AnvilOS Project; https://anvilos.invalid/; grant@anvilos.invalid" \
+	--iso-volume "anvilos-1.0.0-amd64" \
+	--bootappend-live "boot=live components username=forge hostname=anvilos quiet splash locales=en_US.UTF-8 keyboard-layouts=us" \
 	--memtest memtest86+ \
 	"${@}"

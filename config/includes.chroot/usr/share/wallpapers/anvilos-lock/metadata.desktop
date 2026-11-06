@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=AnvilOS Anvil (Forge Glow)
+Name[en_AU]=AnvilOS Anvil (Forge Glow)
+X-KDE-PluginInfo-Author=AnvilOS Project
+X-KDE-PluginInfo-Email=grant@anvilos.invalid
+X-KDE-PluginInfo-Name=anvilos-anvil-forge-glow
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-License=MIT
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-ServiceTypes=Plasma/Wallpaper
+Type=Service
+Icon=contents/images/1920x1080.png

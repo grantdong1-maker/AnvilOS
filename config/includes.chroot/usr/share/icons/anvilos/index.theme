@@ -1,6 +1,6 @@
 [Icon Theme]
-Name=GrantOS
-Comment=GrantOS brand overrides on Breeze Dark
+Name=AnvilOS
+Comment=AnvilOS brand overrides on Breeze Dark
 Inherits=breeze-dark
 Directories=apps/22x22,apps/24x24,apps/32x32,apps/48x48,apps/64x64,apps/128x128,places/22x22,places/48x48,places/128x128
 

@@ -1,15 +1,15 @@
-# GrantOS shell defaults - applied to every new home from /etc/skel, so the
+# AnvilOS shell defaults - applied to every new home from /etc/skel, so the
 # session is branded from the first frame (firstrun re-applies the same
 # scheme live for extra safety).
 [General]
-ColorScheme=GrantOSDark
+ColorScheme=AnvilOSDark
 Font=Inter,10,-1,5,50,0,0,0,0,0
 MenuFont=Inter,10,-1,5,50,0,0,0,0,0
 ToolButtonFont=Inter,9,-1,5,50,0,0,0,0,0
 SmallestDesktopIconFontSize=48
 
 [Icons]
-Theme=grantos
+Theme=anvilos
 
 [KDE]
 widgetStyle=breeze

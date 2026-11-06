@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=GrantOS first-run setup
-Comment=Applies the GrantOS wallpaper, color scheme and desktop theme on first login
-Exec=/usr/bin/grantos-firstrun
-NoDisplay=true
-X-KDE-StartupNotify=false

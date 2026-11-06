@@ -1,7 +1,7 @@
 #!/bin/sh
-# GrantOS System Monitor launcher: start the collector (if needed) + overlay.
+# AnvilOS System Monitor launcher: start the collector (if needed) + overlay.
 # SPDX-License-Identifier: MIT
-MON=/usr/share/grantos-monitor
+MON=/usr/share/anvilos-monitor
 if ! pgrep -f "$MON/collect.py" >/dev/null 2>&1; then
     nohup python3 "$MON/collect.py" >/dev/null 2>&1 &
 fi

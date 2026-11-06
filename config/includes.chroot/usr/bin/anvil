@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# gforge - Forge Linux performance control utility.
+# anvil - AnvilOS performance control utility.
 #
 # Subcommands: status, gaming, training, balanced, gpu, doctor, clean, help
 set -u
@@ -148,9 +148,9 @@ profile_balanced() {
 # ---------------------------------------------------------------- status ---
 
 cmd_status() {
-    echo "Forge Linux (see /etc/forge-release)"
-    if [ -r /etc/forge-release ]; then
-        sed 's/^/  /' /etc/forge-release
+    echo "AnvilOS (see /etc/anvilos-release)"
+    if [ -r /etc/anvilos-release ]; then
+        sed 's/^/  /' /etc/anvilos-release
     fi
     say "kernel:  $(uname -r)"
     say "uptime:  $(uptime -p 2>/dev/null || uptime)"
@@ -190,7 +190,7 @@ cmd_gpu() {
 
 cmd_doctor() {
     echo "Forge doctor:"
-    if [ -r /etc/forge-release ]; then ok "forge-release present"; else fail "no /etc/forge-release (not a Forge install?)"; fi
+    if [ -r /etc/anvilos-release ]; then ok "forge-release present"; else fail "no /etc/anvilos-release (not a Forge install?)"; fi
     have vulkaninfo && vulkaninfo --summary >/dev/null 2>&1 && ok "vulkan (vulkaninfo)" || fail "vulkan unusable (install vulkan-tools, check driver)"
     have glxinfo && glxinfo >/dev/null 2>&1 && ok "opengl (glxinfo)" || fail "opengl unusable"
     if have nvidia-smi && nvidia-smi >/dev/null 2>&1; then
@@ -214,7 +214,7 @@ cmd_doctor() {
     if python3 -c 'import torch; assert torch.cuda.is_available()' >/dev/null 2>&1; then
         ok "torch CUDA available"
     else
-        note "torch CUDA: no (see 'gforge training' for the wheel env)"
+        note "torch CUDA: no (see 'anvil training' for the wheel env)"
     fi
     if curl -sI --max-time 5 https://deb.debian.org/ >/dev/null 2>&1; then
         ok "network reachability"
@@ -233,19 +233,19 @@ cmd_clean() {
     say "system apt cache cleaned"
 }
 
-version() { printf 'gforge %s\n' "$VERSION"; }
+version() { printf 'anvil %s\n' "$VERSION"; }
 
 usage() {
     cat <<EOT
-gforge ${VERSION} - Forge Linux control utility
+anvil ${VERSION} - AnvilOS control utility
 
-  gforge status     show OS, scheduler, limits, GPU snapshot
-  gforge gaming     performance profile (governors, swappiness, NVIDIA persistence)
-  gforge training   training profile (+ CUDA wheel venv advice)
-  gforge balanced   restore saved governors and desktop sysctls
-  gforge gpu        NVIDIA / GL / Vulkan summary
-  gforge doctor     environment checks
-  gforge clean      remove apt/pip/flatpak caches
+  anvil status     show OS, scheduler, limits, GPU snapshot
+  anvil gaming     performance profile (governors, swappiness, NVIDIA persistence)
+  anvil training   training profile (+ CUDA wheel venv advice)
+  anvil balanced   restore saved governors and desktop sysctls
+  anvil gpu        NVIDIA / GL / Vulkan summary
+  anvil doctor     environment checks
+  anvil clean      remove apt/pip/flatpak caches
 EOT
 }
 
@@ -260,5 +260,5 @@ case "${1:-}" in
     version|--version|-V) version ;;
     help|--help|-h) usage ;;
     "") usage; exit 0 ;;
-    *) echo "gforge: unknown command '$1'" >&2; usage >&2; exit 2 ;;
+    *) echo "anvil: unknown command '$1'" >&2; usage >&2; exit 2 ;;
 esac

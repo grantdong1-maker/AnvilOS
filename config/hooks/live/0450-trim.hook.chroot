@@ -44,8 +44,8 @@ if [ -f /usr/share/applications/kdesystemsettings.desktop ]; then
 fi
 
 # Plasma System Monitor is a hard dependency of plasma-desktop (its panel
-# widgets live there), so it cannot be purged - but GrantOS ships its own
-# "System Monitor" (grantos-monitor), so hide the KDE one from the menu.
+# widgets live there), so it cannot be purged - but AnvilOS ships its own
+# "System Monitor" (anvilos-monitor), so hide the KDE one from the menu.
 if [ -f /usr/share/applications/org.kde.plasma-systemmonitor.desktop ]; then
     sed -i -e '/^NoDisplay=/d' -e '$a NoDisplay=true' /usr/share/applications/org.kde.plasma-systemmonitor.desktop
 fi

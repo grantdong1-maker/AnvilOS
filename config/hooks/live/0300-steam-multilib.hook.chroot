@@ -3,7 +3,7 @@
 # Runs in the gaming and full variants; --lite moves this file to .disabled.
 set -e
 
-echo "hook: GrantOS steam + 32-bit gaming runtime"
+echo "hook: AnvilOS steam + 32-bit gaming runtime"
 
 # Steam is 32-bit; multiarch must exist before its packages can resolve.
 dpkg --add-architecture i386

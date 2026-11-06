@@ -1,9 +1,9 @@
 [General]
-Name=GrantOS
+Name=AnvilOS
 Parent=FALLBACK/
 
 [Appearance]
-ColorScheme=GrantOS
+ColorScheme=AnvilOS
 
 [InteractionOptions]
 WheelScrollAmount=3

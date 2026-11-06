@@ -1,5 +1,5 @@
 [General]
-DefaultProfile=GrantOS.profile
+DefaultProfile=AnvilOS.profile
 
 [KonsoleWindow]
 ShowMenuBarByDefault=false

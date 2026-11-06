@@ -1,15 +1,15 @@
 #!/bin/sh
-# GrantOS first-login theming: apply brand wallpaper, dark scheme, ember accent.
+# AnvilOS first-login theming: apply brand wallpaper, dark scheme, ember accent.
 # Runs once per user account, from XDG autostart after Plasma comes up.
 
-[ -f "$HOME/.config/grantos-initialized" ] && exit 0
+[ -f "$HOME/.config/anvilos-initialized" ] && exit 0
 
 # Give Plasma a moment to finish starting the shell.
 sleep 8
 
-plasma-apply-colorscheme GrantOSDark >/dev/null 2>&1 || true
+plasma-apply-colorscheme AnvilOSDark >/dev/null 2>&1 || true
 plasma-apply-desktoptheme breeze-dark >/dev/null 2>&1 || true
-plasma-apply-wallpaperimage /usr/share/wallpapers/grantos/contents/images/1920x1080.png >/dev/null 2>&1 || true
+plasma-apply-wallpaperimage /usr/share/wallpapers/anvilos/contents/images/1920x1080.png >/dev/null 2>&1 || true
 
 # Application launcher button -> anvil icon.
 # The panel layout is created by Plasma at first login, so we rewrite the
@@ -25,10 +25,10 @@ if [ -f "$cfg" ]; then
         [ -n "$cnum" ] && [ -n "$aid" ] && \
         kwriteconfig6 --file "$cfg" --group Containments --group "$cnum" \
             --group Applets --group "$aid" --group Configuration \
-            --group General --key icon grantos-anvil
+            --group General --key icon anvilos-anvil
     done
     systemctl --user restart plasma-plasmashell.service >/dev/null 2>&1 || true
 fi
 
 mkdir -p "$HOME/.config"
-touch "$HOME/.config/grantos-initialized"
+touch "$HOME/.config/anvilos-initialized"

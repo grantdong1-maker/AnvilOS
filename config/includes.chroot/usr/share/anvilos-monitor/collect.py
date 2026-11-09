@@ -115,7 +115,7 @@ def cpu_sample():
         if not line.startswith("cpu"):
             break
         p = line.split()
-        idle = int(p[5]) + int(p[6])
+        idle = int(p[4]) + int(p[5])
         total = sum(int(x) for x in p[1:9])
         if p[0] == "cpu":
             tot = (total, idle)

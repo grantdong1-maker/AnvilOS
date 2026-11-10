@@ -7,7 +7,7 @@
 #   sudo bash build-all.sh lite full  # or just the ones you still need
 set -e
 cd "$(dirname "$0")"
-VERSION=1.0.0
+VERSION=1.0.2
 VARIANTS=("$@")
 [ ${#VARIANTS[@]} -eq 0 ] && VARIANTS=(lite gaming full)
 

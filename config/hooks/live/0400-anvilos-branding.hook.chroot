@@ -6,6 +6,11 @@ set -e
 
 echo "hook: AnvilOS branding (os-release, SDDM, Plymouth, services)"
 
+# ------------------------------------------------- no stock KDE System Monitor
+# plasma-systemmonitor duplicates the AnvilOS monitor in the applications
+# menu (both register as "System Monitor"); ship only the AnvilOS one.
+apt-get -y purge plasma-systemmonitor >/dev/null 2>&1 || true
+
 # ---------------------------------------------------------------- os-release
 # Live-build copies our os-release files BEFORE package installation, so
 # base-files can overwrite them in the chroot. Re-assert them here.
@@ -87,7 +92,14 @@ for d in org.kde.discover.desktop org.kde.discover.urlhandler.desktop; do
     [ -f /usr/share/applications/"$d" ] || continue
     sed -i -e 's/^Name=.*/Name=AnvilOS Software/' \
            -e 's/^GenericName=.*/GenericName=Software/' \
+           -e 's/^Icon=.*/Icon=anvilos-software/' \
         /usr/share/applications/"$d"
+done
+# Update notifier + APT url handler: keep their names, but the stock store
+# bag logo goes everywhere; the anvil mark replaces it.
+for d in org.kde.discover.notifier.desktop org.kde.discover.apt.urlhandler.desktop; do
+    [ -f /usr/share/applications/"$d" ] || continue
+    sed -i -e 's/^Icon=.*/Icon=anvilos-software/' /usr/share/applications/"$d"
 done
 
 # -------------------------------------------------- session startup splash

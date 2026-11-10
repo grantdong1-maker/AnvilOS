@@ -1,0 +1,4 @@
+Acquire::Retries "8";
+Acquire::http::Pipeline-Depth "0";
+Acquire::http::User-Agent "curl/8.14.1";
+Acquire::https::User-Agent "curl/8.14.1";

@@ -58,10 +58,10 @@ LB_SYSTEM="live"
 LB_IMAGE_NAME="live-image"
 
 # Set options to use with apt
-APT_OPTIONS="--yes -o Acquire::Retries=5"
+APT_OPTIONS="--yes -o Acquire::Retries=8 -o Acquire::http::User-Agent=curl/8.14.1 -o Acquire::https::User-Agent=curl/8.14.1 -o Acquire::http::Pipeline-Depth=0"
 
 # Set options to use with aptitude
-APTITUDE_OPTIONS="--assume-yes -o Acquire::Retries=5"
+APTITUDE_OPTIONS="--assume-yes -o Acquire::Retries=8 -o Acquire::http::User-Agent=curl/8.14.1 -o Acquire::https::User-Agent=curl/8.14.1 -o Acquire::http::Pipeline-Depth=0"
 
 # Set options to use with debootstrap
 DEBOOTSTRAP_OPTIONS=""

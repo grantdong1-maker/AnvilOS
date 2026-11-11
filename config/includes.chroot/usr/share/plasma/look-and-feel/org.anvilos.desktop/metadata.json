@@ -1,0 +1,10 @@
+{
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "KPlugin": {
+        "Id": "org.anvilos.desktop",
+        "Name": "AnvilOS",
+        "Description": "AnvilOS dark forge look: anvil wallpaper, ember accents, AnvilOS icons",
+        "License": "MIT",
+        "Website": "https://github.com/grantdong1-maker/AnvilOS"
+    }
+}

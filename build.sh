@@ -98,6 +98,9 @@ if [ "$VARIANT" != full ]; then
 fi
 
 cd "$SCRIPT_DIR"
+# live-build regenerates config/binary; re-assert the ISO application string
+# so boot/banner branding always reads AnvilOS 1.0 (Hammer).
+[ -f config/binary ] && sed -i 's|^LB_ISO_APPLICATION=.*|LB_ISO_APPLICATION="AnvilOS 1.0 (Hammer)"|' config/binary
 echo "==> configuring image (lb build; logs in build.log)"
 lb build 2>&1 | tee build.log
 BUILD_RC=${PIPESTATUS[0]}

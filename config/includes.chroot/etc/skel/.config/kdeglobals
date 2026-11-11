@@ -13,3 +13,4 @@ Theme=anvilos
 
 [KDE]
 widgetStyle=breeze
+LookAndFeelPackage=org.anvilos.desktop
